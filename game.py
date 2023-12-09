@@ -1,12 +1,16 @@
+
+from unittest.mock import patch
 from difficulty import Difficulty
 from options.menu import ExitGameException
 from state import GameState
 from options.game import GameOpt
+from user_statistics import UserStatistics
 from utils import clear_screen, remove_accent_marks
 from clue_handler import ClueHandler
 import random
 import getpass
 import api
+from word_category import WordCategory
 
 class HangmanGame:
 
@@ -192,4 +196,117 @@ class HangmanGame:
 def list_to_str(list):
     return (" ").join(list)
 
+import unittest
 
+class TestHangmanGame(unittest.TestCase):
+    def setUp(self):
+        self.game = HangmanGame(Difficulty.HARD, UserStatistics(0,1,1), WordCategory.ANINFO)
+        self.game.word = "hola"
+        self.game.letters_to_guess = ["h", "o", "l", "a"]
+        pass
+    
+    @patch('builtins.print')
+    def test_try_letter(self, mock_print):
+        self.game.try_to_guess_letter("h")
+        self.assertEqual(self.game.state, GameState.RUNNING)
+        self.assertEqual(self.game.attempts_remaining, 3)
+        self.assertEqual(self.game.letters_to_guess, ["o", "l", "a"])
+        self.assertEqual(self.game.letters_guessed, ["h"])
+        self.assertEqual(self.game.letters_missed, [])
+
+        self.game.try_to_guess_letter("t")
+        self.assertEqual(self.game.state, GameState.RUNNING)
+        self.assertEqual(self.game.attempts_remaining, 2)
+        self.assertEqual(self.game.letters_missed, ["t"])
+    
+    @patch('builtins.print')
+    def test_try_letter_win(self, mock_print):
+        self.game.try_to_guess_letter("h")
+        self.assertEqual(self.game.state, GameState.RUNNING)
+        self.assertEqual(self.game.attempts_remaining, 3)
+        self.assertEqual(self.game.letters_to_guess, ["o", "l", "a"])
+        self.assertEqual(self.game.letters_guessed, ["h"])
+        self.assertEqual(self.game.letters_missed, [])
+
+        self.game.try_to_guess_letter("o")
+        self.assertEqual(self.game.state, GameState.RUNNING)
+        self.assertEqual(self.game.attempts_remaining, 3)
+        self.assertEqual(self.game.letters_to_guess, ["l", "a"])
+        self.assertEqual(self.game.letters_guessed, ["h", "o"])
+        self.assertEqual(self.game.letters_missed, [])
+
+        self.game.try_to_guess_letter("l")
+        self.assertEqual(self.game.state, GameState.RUNNING)
+        self.assertEqual(self.game.attempts_remaining, 3)
+        self.assertEqual(self.game.letters_to_guess, ["a"])
+        self.assertEqual(self.game.letters_guessed, ["h", "o", "l"])
+        self.assertEqual(self.game.letters_missed, [])
+
+        self.game.try_to_guess_letter("a")
+        self.assertEqual(self.game.state, GameState.WON)
+        self.assertEqual(self.game.attempts_remaining, 3)
+        self.assertEqual(self.game.letters_to_guess, [])
+        self.assertEqual(self.game.letters_guessed, ["h", "o", "l", "a"])
+        self.assertEqual(self.game.letters_missed, [])
+
+    @patch('builtins.print')
+    def test_try_letter_lose(self, mock_print):
+        self.game.try_to_guess_letter("h")
+        self.assertEqual(self.game.state, GameState.RUNNING)
+        self.assertEqual(self.game.attempts_remaining, 3)
+        self.assertEqual(self.game.letters_to_guess, ["o", "l", "a"])
+        self.assertEqual(self.game.letters_guessed, ["h"])
+        self.assertEqual(self.game.letters_missed, [])
+
+        self.game.try_to_guess_letter("t")
+        self.assertEqual(self.game.state, GameState.RUNNING)
+        self.assertEqual(self.game.attempts_remaining, 2)
+        self.assertEqual(self.game.letters_missed, ["t"])
+
+        self.game.try_to_guess_letter("m")
+        self.assertEqual(self.game.state, GameState.RUNNING)
+        self.assertEqual(self.game.attempts_remaining, 1)
+        self.assertEqual(self.game.letters_missed, ["t", "m"])
+
+        self.game.try_to_guess_letter("f")
+        self.assertEqual(self.game.state, GameState.LOST)
+        self.assertEqual(self.game.attempts_remaining, 0)
+        self.assertEqual(self.game.letters_missed, ["t", "m", "f"])
+
+    @patch('builtins.print')
+    def test_try_word_win(self, mock_print):
+        self.game.try_to_guess_word("auto")
+        self.assertEqual(self.game.state, GameState.RUNNING)
+        self.assertEqual(self.game.attempts_remaining, 2)
+
+        self.game.try_to_guess_word("hola")
+        self.assertEqual(self.game.state, GameState.WON)
+
+    @patch('builtins.print')
+    def test_try_word_lose(self, mock_print):
+        self.game.try_to_guess_word("auto")
+        self.assertEqual(self.game.state, GameState.RUNNING)
+        self.assertEqual(self.game.attempts_remaining, 2)
+
+        self.game.try_to_guess_word("fail")
+        self.assertEqual(self.game.state, GameState.RUNNING)
+
+        self.game.try_to_guess_word("camejo")
+        self.assertEqual(self.game.state, GameState.LOST)
+    
+    @patch('builtins.print')
+    def test_try_words_or_letters(self, mock_print):
+        self.game.try_to_guess("hello")
+        self.assertEqual(self.game.state, GameState.RUNNING)
+        self.assertEqual(self.game.attempts_remaining, 2)
+
+        self.game.try_to_guess("u")
+        self.assertEqual(self.game.state, GameState.RUNNING)
+        self.assertEqual(self.game.attempts_remaining, 1)
+
+        self.game.try_to_guess("hola")
+        self.assertEqual(self.game.state, GameState.WON)
+
+
+if __name__ == '__main__':
+    unittest.main()
