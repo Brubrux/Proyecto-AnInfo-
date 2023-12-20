@@ -7,6 +7,7 @@ from src.clue_handler import ClueHandler
 import random
 import getpass
 import utils.api as api
+import re 
 
 class HangmanGame:
 
@@ -71,6 +72,17 @@ class HangmanGame:
 
 
     def try_to_guess_letter(self,letter):
+        numbers = re.findall(r'\d+', letter)
+        special_characters = re.findall(r'[^\w\s]', letter)
+        
+        if letter in special_characters:
+            print("\nIngresaste un caracter especial y es un caracter invalido, vuelve a intentarlo\n")
+            return
+    
+        if numbers:
+            print("\nIngresaste un número y es un caracter invalido, vuelve a intentarlo\n")
+            return
+            
         if letter in self.letters_guessed:
             print("\nYa adivinaste esta letra, vuelve a intentarlo\n")
             return
@@ -82,7 +94,7 @@ class HangmanGame:
             print("\nAdivinaste una letra!\n")   
             self.letters_to_guess.remove(letter)
             self.letters_guessed.append(letter)
-            
+        
         else:
             print("\nLetra incorrecta, vuelve a intentarlo\n")
             self.attempts_remaining -= 1
