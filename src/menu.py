@@ -26,6 +26,14 @@ class GameMenu:
 
     @staticmethod
     def _show_options():
+        
+        center_text = "\033[95m{:^80}\033[0m"
+    
+        message = "Antes de empezar a jugar, maximiza la pantalla para obtener una mejor experiencia."
+    
+    
+        print(center_text.format(message))                                                               
+        
         print("Opciones:")
         print("\t1 - Empezar a jugar")
         print("\t2 - Seleccionar dificultad")
