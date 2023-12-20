@@ -125,6 +125,8 @@ class HangmanGame:
         print("3. Comprar pista simple (precio:  2 puntos)")
         print("4. Comprar pista bonus  (precio: 10 puntos)")
         print("\nIngrese una letra para continuar jugando\n")
+        
+    
 
     def end():
 
@@ -166,6 +168,7 @@ class HangmanGame:
                 return
 
             self.print_state()
+            
         
         HangmanGame.end()
         clear_screen()
@@ -173,8 +176,9 @@ class HangmanGame:
     def run(self):
         clear_screen()
         print("\nBienvenido al juego del Ahorcado!\n")                                                                        
-        self.print_state()
+        
         self.play()
+        self.print_state()
 
 def list_to_str(list):
     return (" ").join(list)

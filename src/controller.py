@@ -57,3 +57,5 @@ class GameController:
 
     def buy_bonus_clue(self):
         self.user_statistics.buy_bonus_clue()
+        
+    
