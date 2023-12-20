@@ -98,7 +98,7 @@ class HangmanGame:
     
     def try_to_guess_word(self, word):
         if all([caracter.isalpha() for caracter in word]) == False:
-            print("\nVuelve an intentarlo: Haz ingresado una cadena de/con numeros.\n")
+            print("\nVuelve a intentarlo: Haz ingresado una cadena de/con numeros.\n")
             return
         if word == remove_accent_marks(self.word.lower()):
             print("\nAdivinaste la palabra!\n")
