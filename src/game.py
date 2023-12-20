@@ -175,7 +175,7 @@ class HangmanGame:
 
     def run(self):
         clear_screen()
-        print("\nBienvenido al juego del Ahorcado!\n")                                                                        
+        print("\nBienvenido al juego del Ahorcado!\n")
         
         self.play()
         self.print_state()
