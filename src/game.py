@@ -71,6 +71,9 @@ class HangmanGame:
 
 
     def try_to_guess_letter(self,letter):
+        if letter.isdigit():
+            print("\nNo haz ingresado una letra.\n")
+            return
         if letter in self.letters_guessed:
             print("\nYa adivinaste esta letra, vuelve a intentarlo\n")
             return
@@ -94,7 +97,9 @@ class HangmanGame:
             self.state = GameState.LOST
     
     def try_to_guess_word(self, word):
-        
+        if all([caracter.isalpha() for caracter in word]) == False:
+            print("\nVuelve a intentarlo: Haz ingresado una cadena de/con numeros.\n")
+            return
         if word == remove_accent_marks(self.word.lower()):
             print("\nAdivinaste la palabra!\n")
             self.state = GameState.WON
@@ -119,6 +124,7 @@ class HangmanGame:
         self.clue_handler.buy_bonus_clue()
 
     def show_options():
+        print("\nPodes elegir alguna de las siguientes opciones:")
         print("\n0. Abandonar partida")
         print("1. Usar pista simple")
         print("2. Usar pista bonus")
@@ -139,7 +145,7 @@ class HangmanGame:
         self.try_to_guess_letter(inp) 
 
     def invalid_input(inp):
-        return len(inp) == 0    
+        return len(inp) == 0  
 
     def is_won(self):
         return self.state == GameState.WON
