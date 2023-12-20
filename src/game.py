@@ -97,7 +97,7 @@ class HangmanGame:
             self.state = GameState.LOST
     
     def try_to_guess_word(self, word):
-        if all([caracter.isalpha() for caracter in word]) == False or word.isdigit():
+        if all([caracter.isalpha() for caracter in word]) == False:
             print("\nVuelve an intentarlo: Haz ingresado una cadena de/con numeros.\n")
             return
         if word == remove_accent_marks(self.word.lower()):
